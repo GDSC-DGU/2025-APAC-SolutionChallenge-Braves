@@ -134,7 +134,7 @@ public class AuthService {
                         .build()));
 
         // 3. JWT 토큰 생성
-        String token = jwtProvider.createToken(user.getId(), user.getRole());
+        String token = jwtProvider.createToken(user.getId(), user.getEmail());
 
         // 4. 응답 DTO
         return AuthResponseDto.builder()
