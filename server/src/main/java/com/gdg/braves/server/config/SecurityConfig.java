@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // 세션 사용 안 함
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)  // JWT 필터 추가
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/google/callback").permitAll()  // 로그인, 회원가입은 인증 없이 접근 가능
+                        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/google/callback", "/api/auth/google/mobile").permitAll()  // 로그인, 회원가입은 인증 없이 접근 가능
                         .requestMatchers("/api/**").authenticated()  // 모든 `/api/**` 요청은 인증 필요
                         .anyRequest().denyAll()  // 나머지 요청은 전부 접근 제한
                 )
