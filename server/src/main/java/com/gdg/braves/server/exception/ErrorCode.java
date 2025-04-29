@@ -21,7 +21,10 @@ public enum ErrorCode {
     DUPLICATE_NICKNAME(4001, "중복하는 닉네임입니다.", HttpStatus.CONFLICT),
 
     // 구글 OAuth 관련 에러
-    GOOGLE_LOGIN_FAILED(5000, "구글 로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED);
+    GOOGLE_LOGIN_FAILED(5000, "구글 로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    GOOGLE_ACCESS_TOKEN_FAILED(5001, "구글 액세스 토큰 획득에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    INVALID_GOOGLE_ID_TOKEN(5002, "유효하지 않은 구글 ID 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    GOOGLE_USER_INFO_FAILED(5003, "구글 사용자 정보 획득에 실패했습니다.", HttpStatus.UNAUTHORIZED);
 
     private final int code;         // 비즈니스 에러 코드 (우리 서버 내부 규칙)
     private final String message;   // 에러 메시지
