@@ -1,0 +1,5 @@
+Flask
+PyJWT
+mysql-connector-python
+google-auth
+requests
