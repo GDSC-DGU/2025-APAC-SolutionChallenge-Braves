@@ -37,7 +37,7 @@ class MissionCard extends StatelessWidget {
               onDownload: () {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('이미지 저장 기능은 추후 구현됩니다.')),
+                  const SnackBar(content: Text('Image Save Feature will be implemented later.')),
                 );
               },
             ),
@@ -81,7 +81,7 @@ class MissionCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       const Text(
-                        '수행',
+                        'Completed',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 13,
