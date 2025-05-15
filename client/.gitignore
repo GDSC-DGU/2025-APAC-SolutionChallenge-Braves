@@ -41,3 +41,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+.env
+.env.local
+.env.development
+.env.production
+
+google-services.json
+

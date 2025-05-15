@@ -69,6 +69,8 @@ class AddTripViewModel extends ChangeNotifier {
       missionFrequency: (_density * 10).toInt(),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      totalMissions: 0,
+      completedMissions: 0,
     );
     await repository.addTrip(trip);
     tripProvider.addTrip(trip);
