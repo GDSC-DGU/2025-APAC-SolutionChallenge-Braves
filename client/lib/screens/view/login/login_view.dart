@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../view_model/login_view_model.dart';
-import '../profile/profile_view.dart';
 import '../../../core/provider/user_provider.dart';
 import '../../../data/repository/auth_repository.dart';
-import '../../../data/repository/auth_repository_impl.dart';
 import '../main_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -12,16 +11,11 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<AuthRepository>(create: (_) => AuthRepositoryImpl()),
-        ChangeNotifierProvider(
-          create: (context) => LoginViewModel(
-            authRepository: context.read<AuthRepository>(),
-            userProvider: context.read<UserProvider>(),
-          ),
-        ),
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => LoginViewModel(
+        authRepository: context.read<AuthRepository>(),
+        userProvider: context.read<UserProvider>(),
+      ),
       child: const _LoginViewBody(),
     );
   }
@@ -42,20 +36,47 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
   Widget build(BuildContext context) {
     final loginViewModel = context.read<LoginViewModel>();
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Center(
         child: _isLoading
             ? const CircularProgressIndicator()
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Image.asset(
+                    'assets/images/bravacation_icon.jpg',
+                    height: 200,
+                  ),
+                  Image.asset(
+                    'assets/images/bravacation_logo.png',
+                    height: 100,
+                  ),
+                  const SizedBox(height: 32),
                   if (_error != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16),
-                      child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                      child: Text(
+                        _error!,
+                        style: const TextStyle(color: Color(0xFFB8B741)),
+                      ),
                     ),
                   ElevatedButton.icon(
-                    icon: const Icon(Icons.login),
-                    label: const Text('Sign in with Google'),
+                    icon: const Icon(Icons.login, color: Colors.white),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Sign in with Google',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.asset(
+                          'assets/images/flat-color-icons_google.svg',
+                          height: 24,
+                          width: 24,
+                        ),
+                      ],
+                    ),
                     onPressed: () async {
                       setState(() {
                         _isLoading = true;
@@ -83,13 +104,15 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0xFF56BC6C),
+                      foregroundColor: Colors.white,
                       minimumSize: const Size(220, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
+                        side: const BorderSide(color: Color(0xFFB8B741), width: 2),
                       ),
                       elevation: 2,
+                      shadowColor: const Color(0xFFB8B741),
                     ),
                   ),
                 ],
