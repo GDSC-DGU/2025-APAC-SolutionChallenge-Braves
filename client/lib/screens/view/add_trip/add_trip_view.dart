@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../view_model/add_trip_view_model.dart';
-import '../../../core/provider/trip_provider.dart';
-import '../../../data/datasource/trip_datasource.dart';
-import '../../../data/repository/trip_repository.dart';
-import '../../../data/repository/trip_repository_impl.dart';
-import '../../../core/provider/user_provider.dart';
+import '../../../config/color_system.dart';
 
 class AddTripView extends StatelessWidget {
-  const AddTripView({super.key});
+  final AddTripViewModel viewModel;
+  const AddTripView({super.key, required this.viewModel});
 
   Future<void> _pickDateRange(BuildContext context, AddTripViewModel model) async {
     final picked = await showDateRangePicker(
@@ -26,24 +22,13 @@ class AddTripView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: Provider.of<TripProvider>(context, listen: false)),
-        Provider<TripRepository>(create: (context) => TripRepositoryImpl(TripDataSourceImpl(context.read<UserProvider>()))),
-        ChangeNotifierProvider(
-          create: (context) => AddTripViewModel(
-            repository: context.read<TripRepository>(),
-            tripProvider: context.read<TripProvider>(),
-          ),
-        ),
-      ],
-      child: const _AddTripViewBody(),
-    );
+    return _AddTripViewBody(model: viewModel);
   }
 }
 
 class _AddTripViewBody extends StatelessWidget {
-  const _AddTripViewBody();
+  final AddTripViewModel model;
+  const _AddTripViewBody({required this.model});
 
   Future<void> _pickDateRange(BuildContext context, AddTripViewModel model) async {
     final picked = await showDateRangePicker(
@@ -61,10 +46,18 @@ class _AddTripViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AddTripViewModel>(
-      builder: (context, model, _) {
+    return AnimatedBuilder(
+      animation: model,
+      builder: (context, _) {
         return Scaffold(
           backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: const Text('Add Trip'),
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFF56BC6C),
+            elevation: 0,
+            automaticallyImplyLeading: true,
+          ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -72,24 +65,24 @@ class _AddTripViewBody extends StatelessWidget {
               children: [
                 const Center(
                   child: Text(
-                    '새로운 여행 추가',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    'Create a New Trip',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF56BC6C)),
                   ),
                 ),
                 const SizedBox(height: 32),
-                const Text('여행 제목', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Trip Title', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 const SizedBox(height: 8),
                 TextField(
                   controller: model.titleController,
                   decoration: const InputDecoration(
-                    hintText: '여행 제목을 입력하세요',
+                    hintText: 'Enter trip title',
                     filled: true,
                     fillColor: Color(0xFFF5F5F5),
                     border: InputBorder.none,
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text('여행 기간', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Trip Period', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () => _pickDateRange(context, model),
@@ -102,41 +95,41 @@ class _AddTripViewBody extends StatelessWidget {
                     child: Text(
                       model.startDate != null && model.endDate != null
                           ? '${model.startDate!.toString().split(' ')[0]} - ${model.endDate!.toString().split(' ')[0]}'
-                          : '여행 시작일 - 종료일 선택',
+                          : 'Select start and end date',
                       style: const TextStyle(color: Colors.black54),
                     ),
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text('도착 장소', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Destination', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 const SizedBox(height: 8),
                 TextField(
                   controller: model.destinationController,
                   decoration: const InputDecoration(
-                    hintText: '여행 도착 장소를 입력하세요',
+                    hintText: 'Enter destination',
                     filled: true,
                     fillColor: Color(0xFFF5F5F5),
                     border: InputBorder.none,
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text('인원', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('People', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<int>(
                   value: model.people,
                   items: List.generate(10, (i) => i + 1)
-                      .map((e) => DropdownMenuItem(value: e, child: Text('$e명')))
+                      .map((e) => DropdownMenuItem(value: e, child: Text('$e person${e > 1 ? 's' : ''}')))
                       .toList(),
                   onChanged: model.setPeople,
                   decoration: const InputDecoration(
-                    hintText: '여행 인원을 선택하세요',
+                    hintText: 'Select number of people',
                     filled: true,
                     fillColor: Color(0xFFF5F5F5),
                     border: InputBorder.none,
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text('brave 정도', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Brave Level', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 Slider(
                   value: model.brave,
                   onChanged: model.setBrave,
@@ -144,9 +137,11 @@ class _AddTripViewBody extends StatelessWidget {
                   max: 1,
                   divisions: 10,
                   label: (model.brave * 100).toInt().toString(),
+                  activeColor: AppColors.primary,
+                  inactiveColor: AppColors.secondary,
                 ),
                 const SizedBox(height: 24),
-                const Text('미션 빈도', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Mission Frequency', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF56BC6C))),
                 Slider(
                   value: model.density,
                   onChanged: model.setDensity,
@@ -154,6 +149,8 @@ class _AddTripViewBody extends StatelessWidget {
                   max: 1,
                   divisions: 10,
                   label: (model.density * 100).toInt().toString(),
+                  activeColor: AppColors.primary,
+                  inactiveColor: AppColors.secondary,
                 ),
                 const SizedBox(height: 32),
                 SizedBox(
@@ -162,9 +159,20 @@ class _AddTripViewBody extends StatelessWidget {
                     onPressed: () async {
                       await model.saveTrip();
                       model.clear();
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
-                    child: const Text('저장'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF56BC6C),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: const BorderSide(color: Color(0xFFB8B741), width: 2),
+                      ),
+                      elevation: 2,
+                      shadowColor: const Color(0xFFB8B741),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Save', style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
