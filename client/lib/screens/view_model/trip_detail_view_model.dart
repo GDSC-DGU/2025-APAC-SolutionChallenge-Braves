@@ -14,7 +14,7 @@ class TripDetailViewModel extends ChangeNotifier {
   final MissionRepository repository;
 
   List<Mission> _missions = [];
-  List<Mission> get missions => List.unmodifiable(_missions);
+  List<Mission> get missions => List.unmodifiable(_missions.where((m) => m.isCompleted));
 
   // ──────────────────────────────
   // 2. 생성자 (Constructor)
