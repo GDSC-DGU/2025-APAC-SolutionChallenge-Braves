@@ -41,7 +41,7 @@ class ImageViewerDialog extends StatelessWidget {
                   foregroundColor: Colors.black,
                 ),
                 icon: const Icon(Icons.download),
-                label: const Text('이미지 저장'),
+                label: const Text('Save'),
                 onPressed: onDownload,
               ),
             ),

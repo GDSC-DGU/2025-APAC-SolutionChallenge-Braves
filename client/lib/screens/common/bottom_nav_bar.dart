@@ -24,17 +24,17 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.list_alt),
           activeIcon: Icon(Icons.list_alt, color: AppColors.primary),
-          label: '여행',
+          label: 'Trip',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.directions_walk),
           activeIcon: Icon(Icons.directions_walk, color: AppColors.primary),
-          label: '진행중',
+          label: 'In Progress',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           activeIcon: Icon(Icons.person, color: AppColors.primary),
-          label: '프로필',
+          label: 'Profile',
         ),
       ],
     );

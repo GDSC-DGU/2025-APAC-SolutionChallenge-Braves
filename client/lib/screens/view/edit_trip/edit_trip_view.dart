@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../view_model/add_trip_view_model.dart';
+import 'package:provider/provider.dart';
+import '../../view_model/edit_trip_view_model.dart';
+import '../../../core/provider/trip_provider.dart';
+import '../../../data/repository/trip_repository.dart';
+import '../../../data/models/trip.dart';
 import '../../../config/color_system.dart';
 
-class AddTripView extends StatelessWidget {
-  final AddTripViewModel viewModel;
-  const AddTripView({super.key, required this.viewModel});
+class EditTripView extends StatelessWidget {
+  final Trip trip;
+  const EditTripView({super.key, required this.trip});
 
-  Future<void> _pickDateRange(BuildContext context, AddTripViewModel model) async {
+  Future<void> _pickDateRange(BuildContext context, EditTripViewModel model) async {
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -22,15 +26,21 @@ class AddTripView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _AddTripViewBody(model: viewModel);
+    return ChangeNotifierProvider(
+      create: (context) => EditTripViewModel(
+        repository: context.read<TripRepository>(),
+        tripProvider: context.read<TripProvider>(),
+        originalTrip: trip,
+      ),
+      child: const _EditTripViewBody(),
+    );
   }
 }
 
-class _AddTripViewBody extends StatelessWidget {
-  final AddTripViewModel model;
-  const _AddTripViewBody({required this.model});
+class _EditTripViewBody extends StatelessWidget {
+  const _EditTripViewBody();
 
-  Future<void> _pickDateRange(BuildContext context, AddTripViewModel model) async {
+  Future<void> _pickDateRange(BuildContext context, EditTripViewModel model) async {
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -46,13 +56,12 @@ class _AddTripViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: model,
-      builder: (context, _) {
+    return Consumer<EditTripViewModel>(
+      builder: (context, model, _) {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            title: const Text('Add Trip'),
+            title: const Text('Edit Trip'),
             backgroundColor: Colors.white,
             foregroundColor: const Color(0xFF56BC6C),
             elevation: 0,
@@ -65,7 +74,7 @@ class _AddTripViewBody extends StatelessWidget {
               children: [
                 const Center(
                   child: Text(
-                    'Create a New Trip',
+                    'Edit Trip',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF56BC6C)),
                   ),
                 ),
@@ -157,8 +166,7 @@ class _AddTripViewBody extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await model.saveTrip();
-                      model.clear();
+                      await model.saveEditTrip();
                       Navigator.pop(context, true);
                     },
                     style: ElevatedButton.styleFrom(

@@ -16,4 +16,11 @@ class AppFonts {
     fontWeight: FontWeight.normal,
     color: Colors.black,
   );
+
+  static const TextStyle body2 = TextStyle(
+    fontFamily: primaryFont,
+    fontSize: 10,
+    fontWeight: FontWeight.normal,
+    color: Colors.black,
+  );
 } 
