@@ -5,7 +5,9 @@ import './widget/mission_card.dart';
 import '../../../data/models/trip.dart';
 import '../../view/edit_trip/edit_trip_view.dart';
 import '../../../core/service/location_service.dart';
-import 'dart:async';
+import 'package:flutter/widgets.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class TripProgressTrueView extends StatelessWidget {
   final Trip trip;
@@ -40,7 +42,7 @@ class _TripProgressTrueViewBody extends StatefulWidget {
   State<_TripProgressTrueViewBody> createState() => _TripProgressTrueViewBodyState();
 }
 
-class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> with SingleTickerProviderStateMixin {
+class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> with SingleTickerProviderStateMixin, RouteAware {
   late AnimationController _controller;
   late Animation<double> _animation;
   late TripProgressTrueViewModel _model;
@@ -63,14 +65,27 @@ class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> wi
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final viewModel = context.read<TripProgressTrueViewModel>();
+    viewModel.fetchMissions();
+    // RouteObserver 등록
+    final ModalRoute? route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _controller.dispose();
     super.dispose();
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void didPopNext() {
+    // 다른 페이지에서 다시 돌아왔을 때 미션 리스트 새로고침
     final viewModel = context.read<TripProgressTrueViewModel>();
     viewModel.fetchMissions();
   }
@@ -210,14 +225,6 @@ class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> wi
                                 right: 0,
                                 child: Icon(Icons.keyboard_arrow_up_rounded, size: 36, color: Colors.grey.withOpacity(0.4)),
                               ),
-                            // 아래쪽 힌트
-                            if (model.missionCount > 1 && model.currentMission < model.missionCount - 1)
-                              Positioned(
-                                bottom: -36,
-                                left: 0,
-                                right: 0,
-                                child: Icon(Icons.keyboard_arrow_down_rounded, size: 36, color: Colors.grey.withOpacity(0.4)),
-                              ),
                             // 아래쪽(이전 미션) 카드들 (최대 2장)
                             if (model.currentMission > 1)
                               Positioned(
@@ -228,6 +235,14 @@ class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> wi
                               Positioned(
                                 bottom: -24,
                                 child: _buildGrayCard(isDark: false, isTop: false),
+                              ),
+                              // 아래쪽 힌트
+                            if (model.missionCount > 1 && model.currentMission < model.missionCount - 1)
+                              Positioned(
+                                bottom: -36,
+                                left: 0,
+                                right: 0,
+                                child: Icon(Icons.keyboard_arrow_down_rounded, size: 36, color: Colors.grey.withOpacity(0.4)),
                               ),
                             // 메인 카드 (기존 MissionCard)
                             if (mission != null)
