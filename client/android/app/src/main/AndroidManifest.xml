@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
-        android:label="Bravacation"
+        android:label="Bravication"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
