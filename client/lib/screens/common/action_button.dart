@@ -9,7 +9,7 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: 110,
       height: 44,
       child: ElevatedButton.icon(
         onPressed: onPressed,
