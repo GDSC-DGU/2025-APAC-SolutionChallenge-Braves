@@ -1,0 +1,8 @@
+Flask
+PyJWT
+mysql-connector-python
+requests
+timezonefinder
+pytz
+numpy
+firebase-admin

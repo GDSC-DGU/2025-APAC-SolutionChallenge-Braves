@@ -1,0 +1,4 @@
+Flask
+PyJWT
+mysql-connector-python
+google-cloud-storage
