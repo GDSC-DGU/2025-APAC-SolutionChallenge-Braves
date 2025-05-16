@@ -34,7 +34,6 @@ def get_db_connection():
         return conn
     except mysql.connector.Error as err:
         print(f"MySQL connection error: {err}")
-        # Log error and return None on connection failure
         return None
 
 # --- JWT Authentication Decorator ---
@@ -74,31 +73,41 @@ def token_required(f):
 
 # --- API Routes (Registered with Flask app) ---
 
-# Get travel list for the logged-in user
+# 로그인한 사용자의 여행 리스트 조회 (미션 요약 정보 포함)
 @app.route('/api/travels', methods=['GET'])
 @token_required
 def get_travels(current_user_id):
-    """Retrieves the travel list for the logged-in user"""
+    """로그인한 사용자의 여행 리스트를 조회 (각 여행별 미션 총 개수 및 완료 개수 포함)"""
     user_id = current_user_id
     conn = None
     cursor = None
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"code": 500, "success": False, "msg": "Database connection failed"}), 500
+            return jsonify({"code": 500, "success": False, "msg": "데이터베이스 연결 실패"}), 500
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("""
-            SELECT id, title, start_date, end_date, destination, person_count,
-                   brave_level, mission_frequency, created_at, updated_at
-            FROM travels WHERE user_id = %s ORDER BY start_date DESC
-        """, (user_id,))
+        # travels 테이블과 missions 테이블을 LEFT JOIN하여 미션 관련 집계 데이터 가져오기
+        sql_query = """
+            SELECT
+                t.id, t.title, t.start_date, t.end_date, t.destination, t.person_count,
+                t.brave_level, t.mission_frequency, t.created_at, t.updated_at,
+                COUNT(m.id) AS total_missions,
+                COALESCE(SUM(CASE WHEN m.is_completed = TRUE THEN 1 ELSE 0 END), 0) AS completed_missions
+            FROM travels t
+            LEFT JOIN missions m ON t.id = m.travel_id
+            WHERE t.user_id = %s
+            GROUP BY t.id, t.title, t.start_date, t.end_date, t.destination, t.person_count,
+                     t.brave_level, t.mission_frequency, t.created_at, t.updated_at
+            ORDER BY t.start_date DESC
+        """
+        cursor.execute(sql_query, (user_id,))
         travels_raw = cursor.fetchall()
 
         travel_list = []
         for travel in travels_raw:
             travel_list.append({
-                "id": travel['id'], # Move ID to the front
+                "id": travel['id'],
                 "title": travel['title'],
                 "destination": travel['destination'],
                 "startDate": travel['start_date'].strftime('%Y-%m-%d') if travel['start_date'] else None,
@@ -106,20 +115,29 @@ def get_travels(current_user_id):
                 "personCount": travel['person_count'],
                 "braveLevel": travel['brave_level'],
                 "missionFrequency": travel['mission_frequency'],
+                "totalMissions": int(travel['total_missions']),  
+                "completedMissions": int(travel['completed_missions']),  
                 "createdAt": travel['created_at'].isoformat() if travel['created_at'] else None,
                 "updatedAt": travel['updated_at'].isoformat() if travel['updated_at'] else None
             })
 
         return jsonify({
-            "code": 200, "success": True, "msg": "Travel list retrieved successfully",
+            "code": 200, "success": True, "msg": "여행 리스트 및 미션 요약 정보 조회 성공", 
             "travelList": travel_list
         }), 200
     except mysql.connector.Error as err:
-        print(f"MySQL query error [GET /travels]: {err}")
-        return jsonify({"code": 500, "success": False, "msg": "DB query error"}), 500
+        print(f"MySQL 쿼리 오류 [GET /travels with mission summary]: {err}") 
+        return jsonify({"code": 500, "success": False, "msg": "DB 쿼리 오류"}), 500
+    except Exception as e: 
+        print(f"여행 리스트 조회 중 일반 오류 발생 [GET /travels with mission summary]: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"code": 500, "success": False, "msg": "서버 내부 오류"}), 500
     finally:
-        if cursor: cursor.close()
-        if conn and conn.is_connected(): conn.close()
+        if cursor: 
+            cursor.close()
+        if conn and conn.is_connected(): 
+            conn.close()
 
 # Add a new travel for the logged-in user
 @app.route('/api/travels', methods=['POST'])
@@ -214,7 +232,7 @@ def update_travel(current_user_id, travel_id):
         conn = get_db_connection()
         if not conn:
             return jsonify({"code": 500, "success": False, "msg": "Database connection failed"}), 500
-        cursor = conn.cursor(dictionary=True) # For ownership verification
+        cursor = conn.cursor(dictionary=True) 
 
         cursor.execute("SELECT user_id FROM travels WHERE id = %s", (travel_id,))
         travel = cursor.fetchone()
@@ -257,7 +275,7 @@ def delete_travel(current_user_id, travel_id):
         conn = get_db_connection()
         if not conn:
             return jsonify({"code": 500, "success": False, "msg": "Database connection failed"}), 500
-        cursor = conn.cursor(dictionary=True) # For ownership verification
+        cursor = conn.cursor(dictionary=True) 
 
         cursor.execute("SELECT user_id FROM travels WHERE id = %s", (travel_id,))
         travel = cursor.fetchone()
