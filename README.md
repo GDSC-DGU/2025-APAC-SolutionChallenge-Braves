@@ -64,15 +64,31 @@ Our application is built on a robust **Google Cloud Platform** architecture:
 ## App Flow
 
 ```mermaid
-graph LR
-    A[User Login] --> B[Trip List]
-    B --> C{Traveling?}
-    C -->|Yes| D[Traveling Mode]
-    C -->|No| E[Add Trip]
-    D --> F[AI Mission Generation]
-    F --> G[Mission Completion]
-    G --> H[Memory Creation]
-    H --> I[Trip History]
+flowchart LR
+    A[User] --> B[Google Login]
+    B -->|Success| C[Trip List]
+    B -->|Fail| B
+    C --> D{Traveling?}
+    D -->|No| E[Add Trip]
+    E --> F[Traveling]
+    D -->|Yes| F[Traveling]
+    F --> G{Select Mode}
+    G -->|Periodically receive AI missions| H[Periodically receive AI missions]
+    G -->|In Progress| I[Get New Mission by Button]
+    H --> J{Do or Not?}
+    J -->|No| H
+    J -->|Yes| K[Get New Mission]
+    I --> K
+    K --> L[Playing Mission]
+    L --> M{Playing?}
+    M -->|Success| N[Success Mission]
+    M -->|Fail| O[Fail Mission]
+    N --> P[Make Memories]
+    O --> P
+    P --> Q[End Trip]
+    Q --> R[Trip Detail]
+    R --> S[Success Mission(Memory) List]
+    S --> C
 ```
 
 ## Addressing 2025 Travel Trends
