@@ -202,6 +202,22 @@ class _TripProgressTrueViewBodyState extends State<_TripProgressTrueViewBody> wi
                                 top: -24,
                                 child: _buildGrayCard(isDark: false, isTop: true),
                               ),
+                            // 위쪽 힌트
+                            if (model.missionCount > 1 && model.currentMission > 0)
+                              Positioned(
+                                top: -36,
+                                left: 0,
+                                right: 0,
+                                child: Icon(Icons.keyboard_arrow_up_rounded, size: 36, color: Colors.grey.withOpacity(0.4)),
+                              ),
+                            // 아래쪽 힌트
+                            if (model.missionCount > 1 && model.currentMission < model.missionCount - 1)
+                              Positioned(
+                                bottom: -36,
+                                left: 0,
+                                right: 0,
+                                child: Icon(Icons.keyboard_arrow_down_rounded, size: 36, color: Colors.grey.withOpacity(0.4)),
+                              ),
                             // 아래쪽(이전 미션) 카드들 (최대 2장)
                             if (model.currentMission > 1)
                               Positioned(
