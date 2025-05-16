@@ -32,6 +32,7 @@ Generate additional missions anytime you're ready for more adventure.
 Relive your brave moments through photo-based mission history.
 
 ## Architecture
+![Image](https://github.com/user-attachments/assets/b45e78b9-e989-4d99-90d1-f4af917216a9)
 
 Our application is built on a robust **Google Cloud Platform** architecture:
 
@@ -52,6 +53,8 @@ Our application is built on a robust **Google Cloud Platform** architecture:
 | **AI/ML** | Gemini AI, Vertex AI |
 
 ### Additional Technologies
+![Image](https://github.com/user-attachments/assets/70e4b345-fe25-4278-bae0-0b75f386420e)
+
 - **Google Cloud Run** - Serverless container platform for scalable backend services
 - **Grounding with Search Augmentation** - Enhanced fact-based responses using real-time web search integration
 - **Vertex AI** - Machine learning pipeline for personalized mission recommendations
