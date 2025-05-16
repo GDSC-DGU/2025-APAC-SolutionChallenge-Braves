@@ -149,22 +149,35 @@ class _TripCardState extends State<TripCard> with SingleTickerProviderStateMixin
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      Text(
-                        trip.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF757575),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
+                      // 카드 내용
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Mission Completed: ${trip.completedMissions}/${trip.totalMissions}',
+                            trip.title,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF757575),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                'Mission Completed: ${trip.completedMissions}/${trip.totalMissions}',
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${trip.startDate.toString().split(' ')[0]} - ${trip.endDate.toString().split(' ')[0]}',
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 14,
@@ -172,14 +185,37 @@ class _TripCardState extends State<TripCard> with SingleTickerProviderStateMixin
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${trip.startDate.toString().split(' ')[0]} - ${trip.endDate.toString().split(' ')[0]}',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
+                      // 오른쪽 끝에 << 또는 >> 화살표 아이콘 (슬라이드 힌트)
+                      if (_offset == 0)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          child: Center(
+                            child: Row(
+                              children: const [
+                                Icon(Icons.chevron_left_rounded, color: Colors.grey, size: 25),
+                                SizedBox(width: 2),
+                                Icon(Icons.chevron_left_rounded, color: Colors.grey, size: 25),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      if (_offset != 0)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          child: Center(
+                            child: Row(
+                              children: const [
+                                Icon(Icons.chevron_right_rounded, color: Colors.grey, size: 25),
+                                SizedBox(width: 2),
+                                Icon(Icons.chevron_right_rounded, color: Colors.grey, size: 25),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
