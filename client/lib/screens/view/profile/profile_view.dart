@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/profile_view_model.dart';
-import '../../../config/color_system.dart';
 import '../../../config/font_system.dart';
 import '../../../core/provider/user_provider.dart';
 import '../../../data/repository/auth_repository.dart';

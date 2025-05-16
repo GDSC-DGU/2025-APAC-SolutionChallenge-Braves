@@ -287,7 +287,7 @@ class FCMService {
     try {
       final decoded = await missionRepository.acceptMissionProposal(proposalId);
       if (decoded['success'] == true) {
-        final missionId = decoded['missionId'];
+        //final missionId = decoded['missionId'];
         final title = decoded['title'] ?? '';
         final content = decoded['content'] ?? '';
         final tripProvider = context.read<TripProvider>();
@@ -328,8 +328,8 @@ class FCMService {
     final data = message.data;
     final tripId = data['tripId'];
     final proposalId = data['proposalId'];
-    final missionTitle = data['missionTitle'];
-    final missionContent = data['missionContent'];
+    //final missionTitle = data['missionTitle'];
+    //final missionContent = data['missionContent'];
 
     if (tripId != null && proposalId != null) {
       final context = navigatorKey.currentContext!;

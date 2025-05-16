@@ -19,7 +19,7 @@ class TripCard extends StatefulWidget {
 
 class _TripCardState extends State<TripCard> with SingleTickerProviderStateMixin {
   double _offset = 0.0;
-  bool _isOpen = false;
+  //bool _isOpen = false;
   static const double maxOffset = 120.0;
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
@@ -34,10 +34,10 @@ class _TripCardState extends State<TripCard> with SingleTickerProviderStateMixin
     setState(() {
       if (_offset < -maxOffset / 2) {
         _offset = -maxOffset;
-        _isOpen = true;
+        //_isOpen = true;
       } else {
         _offset = 0;
-        _isOpen = false;
+        //_isOpen = false;
       }
     });
   }

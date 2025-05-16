@@ -1,9 +1,4 @@
 import 'package:location/location.dart' as loc;
-import '../../data/repository/trip_repository_impl.dart';
-import '../../data/datasource/trip_datasource.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class LocationService {
   static final loc.Location _location = loc.Location();

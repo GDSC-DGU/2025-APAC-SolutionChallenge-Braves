@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/trip_progress_view_model.dart';
-import '../../../config/color_system.dart';
 import './trip_progress_true_view.dart';
 import './trip_progress_false_view.dart';
 import '../../../core/provider/trip_provider.dart';
