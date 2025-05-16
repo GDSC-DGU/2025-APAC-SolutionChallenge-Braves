@@ -93,7 +93,7 @@ graph LR
     
     P --> Q[End Trip]
     Q --> R[Trip Detail]
-    R --> S[Success Mission(Memory) List]
+    R --> S["Success Mission(Memory) List"]
     
     S -->|Repeat| E
     C --> S
