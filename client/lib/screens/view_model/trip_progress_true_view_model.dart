@@ -89,10 +89,7 @@ class TripProgressTrueViewModel extends ChangeNotifier {
     resetUploadStatus();
     final result = await uploadMissionImage(missionId, image, context);
     if (result != null && result['success'] == true) {
-      setMissionImage(index, image);
-      if (result['fileUrl'] != null) {
-        setMissionImageUrl(index, result['fileUrl']);
-      }
+      await fetchMissions(); // 업로드 성공 시 미션 리스트를 서버에서 다시 받아옴
       _uploadStatus = UploadStatus.success;
       _uploadMessage = '이미지 업로드 성공!';
     } else {
@@ -106,10 +103,7 @@ class TripProgressTrueViewModel extends ChangeNotifier {
     resetUploadStatus();
     final result = await updateMissionImage(missionId, image, context);
     if (result != null && result['success'] == true) {
-      setMissionImage(index, image);
-      if (result['fileUrl'] != null) {
-        setMissionImageUrl(index, result['fileUrl']);
-      }
+      await fetchMissions(); // 수정 성공 시 미션 리스트를 서버에서 다시 받아옴
       _uploadStatus = UploadStatus.success;
       _uploadMessage = '이미지 수정 성공!';
     } else {
@@ -185,10 +179,15 @@ class TripProgressTrueViewModel extends ChangeNotifier {
   // ──────────────────────────────
   Future<void> fetchMissions() async {
     _missions = await repository.fetchMissions(trip.id);
-    // 완료되지 않은 미션이 먼저, 완료된 미션이 나중에 오도록 정렬
+    // 완료되지 않은 미션이 먼저, 완료된 미션이 나중에 오도록 정렬 + 최신 생성순으로 정렬
     _missions.sort((a, b) {
-      if (a.isCompleted == b.isCompleted) return 0;
-      return a.isCompleted ? 1 : -1;
+      if (a.isCompleted != b.isCompleted) {
+        return a.isCompleted ? 1 : -1;
+      }
+      // createdAt이 null일 경우 오래된 것으로 간주
+      final aTime = a.createdAt?.millisecondsSinceEpoch ?? 0;
+      final bTime = b.createdAt?.millisecondsSinceEpoch ?? 0;
+      return bTime.compareTo(aTime); // 최신순(내림차순)
     });
     // FCM으로 전달된 미션이 있으면 임시로 추가
     if (missionTitle != null && missionContent != null) {

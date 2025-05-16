@@ -16,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/service/background_location_service.dart';
 import 'core/service/fcm_service.dart';
+import 'screens/view/trip_progress/trip_progress_true_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,6 +94,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const SplashScreen(),
+      navigatorObservers: [routeObserver],
     );
   }
 }
